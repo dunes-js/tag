@@ -83,17 +83,23 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
 
 	set desc(children: unknown[]) {
 		this.#children = [];
-
-		for (const child of children.flat().filter(e => e || e !== 0)) {
-			if (Base.isElement(child)) {
-				child.#parent = this as unknown as JSX.Element;
-				this.#children.push(child)
-			}
-			else if (!isNone(child)) {
-				this.#children.push(new Content(child))
-			}
-		}
+    this.append(...children);
 	}
+
+  append(...children: unknown[]) {
+    for (const child of children.flat().filter(e => e || e !== 0)) 
+    {
+      if (Base.isElement(child)) 
+      {
+        child.#parent = this as unknown as JSX.Element;
+        this.#children.push(child)
+      }
+      else if (!isNone(child)) 
+      {
+        this.#children.push(new Content(child))
+      }
+    }
+  }
 }
 export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[T]> {
 	static override readonly type = "elem";
