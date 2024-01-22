@@ -14,8 +14,8 @@ declare global {
 	type Child = JSX.Element | Content
 
 	namespace JSX {
-		type Element = Comp | Elem;
-		type ElementClass = Comp;
+		type Element = Comp<any> | Elem<any>;
+		type ElementClass = Comp<any>;
 
 		interface IntrinsicAttributes {
 			i?: number
