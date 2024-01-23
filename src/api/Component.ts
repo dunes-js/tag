@@ -9,9 +9,11 @@ export function Component<T extends {[key: string]: any} = {}>(comp: Component<T
 
 
 
-declare global {
+declare global 
+{
 
-	type Component<T extends {[key: string]: any} = {}> = {
+	type Component<T extends {[key: string]: any} = {}> = 
+  {
 		(this: Comp<T>, props: T, comp: Comp<T>): JSX.Element
 	}
 }
