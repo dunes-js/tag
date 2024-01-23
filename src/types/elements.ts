@@ -1,5 +1,7 @@
-export type CSSProperties = 
-{[k in keyof CSSStyleDeclaration]: CSSStyleDeclaration[k]}
+export type CSSProperties =  {[Key in keyof OmitCSS]: OmitCSS[Key]}
+
+type OmitCSS = Omit<Partial<CSSStyleDeclaration>, "length" | "parentRule">;
+
 
 export type num = number | `${number}`;
 
