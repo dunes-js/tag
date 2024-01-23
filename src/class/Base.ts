@@ -1,6 +1,7 @@
 import { isConstructor, isNone } from "@dunes/tools/bool";
 import { Content } from "./Content.js";
 import type { 
+    CSSProperties,
   Descendants, Properties, Template, 
   TemplateFunction, 
   TemplateFunctionParam, Thing 
@@ -179,6 +180,22 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 	  	else if (isNone(value) || value === "") {
 	  		continue;
 	  	}
+      else if (name == "style")
+      {
+        if (typeof value == "string")
+        {
+          node.setAttribute((name as string), value);
+        }
+        else if (typeof value == "object")
+        {
+          for (const [pName, pValue] of Object.entries(value) as [
+            keyof CSSProperties, CSSProperties[keyof CSSProperties]
+          ][])
+          {
+            node.style[pName] = pValue as any;
+          }
+        }
+      }
 	  	else {
 	  		if (name == "cl") {
 					name = "class"
