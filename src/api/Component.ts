@@ -2,7 +2,8 @@ import type { Comp } from "../class/Base.js"
 
 
 
-export function Component<T extends {[key: string]: any} = {}>(comp: Component<T>) {
+export function Component<T extends {[key: string]: any} = {}>(comp: Component<T>) 
+{
 	return comp;
 }
 
@@ -11,6 +12,6 @@ export function Component<T extends {[key: string]: any} = {}>(comp: Component<T
 declare global {
 
 	type Component<T extends {[key: string]: any} = {}> = {
-		(this: Comp<T>, props: T, comp: Comp<T>): Comp<T>
+		(this: Comp<T>, props: T, comp: Comp<T>): JSX.Element
 	}
 }
