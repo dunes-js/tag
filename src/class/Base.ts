@@ -89,9 +89,8 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
   append(...children: unknown[]) {
     for (const child of children.flat().filter(e => e || e !== 0)) 
     {
-      if (Base.isElement(child)) 
+      if (child instanceof Elem || child instanceof Comp || child instanceof Content) 
       {
-        child.#parent = this as unknown as JSX.Element;
         this.#children.push(child)
       }
       else if (!isNone(child)) 
@@ -101,7 +100,9 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
     }
   }
 }
-export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[T]> {
+
+export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[T]> 
+{
 	static override readonly type = "elem";
 	readonly type = Elem.type
 
@@ -225,27 +226,33 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 
 }
 
-export class Comp<P extends { [key: string]: any; } = any> extends Base<P> {
+export class Comp<P extends { [key: string]: any; } = any> extends Base<P> 
+{
 	static override readonly type = "comp";
 	readonly type = Comp.type;
 
-	constructor(readonly temp: TemplateFunctionParam, props: P | null, desc: Descendants) {
+	constructor(readonly temp: TemplateFunctionParam, props: P | null, desc: Descendants) 
+  {
 		super(props || {} as P, desc);
 	}
 
-	protected produce(): JSX.Element {
-		if (isConstructor(this.temp)) {
+	protected produce(): JSX.Element 
+  {
+		if (isConstructor(this.temp)) 
+    {
 			throw "Override produce in a class component";
 		}
 
 		return (this.temp as TemplateFunction)(this.props, this);
 	}
 
-	override toString(n = 0): string {
+	override toString(n = 0): string 
+  {
 		return this.template().toString(n);
 	}
 
-	template() {
+	template() 
+  {
 		(this.props as any).desc = this.desc;
 		const elem = this.produce();
 		elem.original = this;
@@ -257,11 +264,13 @@ export class Comp<P extends { [key: string]: any; } = any> extends Base<P> {
 	hasRendered?(): void;
 	willDestroy?(): void;
 
-	re(props?: Partial<P>) {
+	re(props?: Partial<P>) 
+  {
 		if (!this.root) throw "Not rooted";
 		this.willDestroy?.();
 
-		if (props) for (const key in props) {
+		if (props) for (const key in props) 
+    {
 			// @ts-expect-error
 			this.props[key] = props[key];
 		}
@@ -269,7 +278,8 @@ export class Comp<P extends { [key: string]: any; } = any> extends Base<P> {
 		this.replace(this.root);
 	}
 
-	override appendTo(elem: HTMLElement): HTMLElement {
+	override appendTo(elem: HTMLElement): HTMLElement 
+  {
 		this.willRender?.();
 		const node = this.template().appendTo(elem);
 		this.root = node;
@@ -278,7 +288,8 @@ export class Comp<P extends { [key: string]: any; } = any> extends Base<P> {
 
 	}
 
-	override replace(elem: HTMLElement): HTMLElement {
+	override replace(elem: HTMLElement): HTMLElement 
+  {
 		this.willRender?.()
 		const node = this.template().replace(elem);
 		this.root = node;
