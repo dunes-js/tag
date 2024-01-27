@@ -1,7 +1,7 @@
 import { Comp, Elem } from "./class/Base.js";
 import { Content } from "./class/Content.js";
 
-export { Component } from "./api/Component.js";
+export * from "./api/Component.js";
 
 export {Comp, Elem}
 export * from "./types/index.js";
