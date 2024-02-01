@@ -14,7 +14,7 @@ export type OnEvent<H extends Element, E extends Event = Event> = {
 
 export type TagEvent<H extends Element, E extends Event = Event> = (
   E & {
-    target: H
+    currentTarget: H
     jsx: JSX.Element
   }
 )
