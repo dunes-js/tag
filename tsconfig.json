@@ -1,6 +1,10 @@
 {
 	"extends": "../../tsconfig.json",
 
+  "exclude": [
+    "lib", 
+  ],
+
 	"compilerOptions": {
 
 		"lib": [
@@ -13,5 +17,9 @@
     "sourceMap": true,
     "declarationMap": true,
     
+    "jsx": "react",
+    "jsxFactory": "Elem.create",
+
+    "moduleResolution": "Node"
 	}
 }

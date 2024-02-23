@@ -1,4 +1,3 @@
-import { isConstructor, isNone } from "@dunes/tools/bool";
 import { Content } from "./Content.js";
 import type { 
     CSSProperties,
@@ -6,6 +5,13 @@ import type {
   TemplateFunction, 
   TemplateFunctionParam, Thing 
 } from "../types/index.js";
+
+export function isNone(x: unknown): x is (null |undefined | false) {
+  return x === null || x === undefined || x === false;
+}
+export function isConstructor<T extends new (...args:any[])=>any>(fn: unknown): fn is T  {
+  return typeof fn == "string" && String(fn).startsWith("class");
+}
 
 abstract class Base<P extends {[key: string]: any}> implements Thing {
 	static type: "elem" | "comp"
@@ -135,14 +141,18 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 
 		let str = `<${this.temp}`;
 
-		for (const [name, value] of Object.entries(this.props)) {
+		for (let [name, value] of Object.entries(this.props)) {
 			if (typeof value === "function") continue;
+      if (name == "cl")
+      {
+        name = "class"
+      }
 			str += " " + name;
 			if (value === true) {
 				continue
 			}
 			if (!isNone(value)) {
-				str += "=" + JSON.stringify(value);
+        str += "=" + JSON.stringify(value);
 			}
 		}
 
