@@ -2,7 +2,7 @@
 	"extends": "../../tsconfig.json",
 
   "exclude": [
-    "lib", 
+    "lib", "test"
   ],
 
 	"compilerOptions": {
@@ -19,7 +19,5 @@
     
     "jsx": "react",
     "jsxFactory": "Elem.create",
-
-    "moduleResolution": "Node"
 	}
 }
