@@ -14,7 +14,7 @@ export function isConstructor<T extends new (...args:any[])=>any>(fn: unknown): 
 }
 
 abstract class Base<P extends {[key: string]: any}> implements Thing {
-	static type: "elem" | "comp"
+	static type: "elem" | "comp" | "frag"
 
 	static isElement(x: unknown): x is JSX.Element {
 		return (x != null) && (
@@ -40,14 +40,19 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
 				}
 				return new (temp as typeof Comp)(temp, props, desc);
 			}
-			else {
-				return new Comp(temp, props, desc)
-			}
+			else if (temp.name == "Fragment")
+      {
+        return new Frag(desc);
+      }
+      else
+      {
+        return new Comp(temp, props, desc);
+      }
 		}
 		return new Elem(temp as "div", props, desc);
 	}
 
-	abstract type: "elem" | "comp"
+	abstract type: "elem" | "comp" | "frag"
 	abstract readonly temp: Template
 
 	readonly kind = "element";
@@ -253,15 +258,48 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 
 }
 
+export class Frag extends Base<{}> 
+{
+	static override readonly type = "frag";
+	readonly type = Frag.type;
+  readonly temp = Frag;
+
+	constructor(desc: Descendants) 
+  {
+		super({}, desc);
+	}
+
+  override appendTo(elem: HTMLElement): HTMLElement 
+  {
+    for (const child of this.desc)
+    {
+      if (child.kind == "content")
+      {
+        elem.append(child.toString());
+      }
+      else
+      {
+        child.appendTo(elem);
+      }
+    }
+
+    return elem;
+  }
+  override replace(elem: HTMLElement): HTMLElement 
+  {
+    throw new Error("Cannot replace an element with a fragment of elements");
+  }
+}
+
 export class Comp<P extends { [key: string]: any; } = any> extends Base<P> 
 {
-	static override readonly type = "comp";
-	readonly type = Comp.type;
+  static override readonly type = "comp";
+  readonly type = Comp.type;
 
-	constructor(readonly temp: TemplateFunctionParam, props: P | null, desc: Descendants) 
+  constructor(readonly temp: TemplateFunctionParam, props: P | null, desc: Descendants) 
   {
-		super(props || {} as P, desc);
-	}
+    super(props || {} as P, desc);
+  }
 
 	protected produce(): JSX.Element 
   {

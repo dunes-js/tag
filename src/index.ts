@@ -1,4 +1,4 @@
-import { Comp, Elem } from "./class/Base.js";
+import { Comp, Elem, Frag } from "./class/Base.js";
 import { Content } from "./class/Content.js";
 
 export * from "./api/Component.js";
@@ -9,12 +9,10 @@ export * from "./types/index.js";
 declare global {
 
 	type TagName = keyof JSX.IntrinsicElements;
-
-
 	type Child = JSX.Element | Content
 
 	namespace JSX {
-		type Element = Comp<any> | Elem<any>;
+		type Element = Comp<any> | Elem<any> | Frag;
 		type ElementClass = Comp<any>;
 
 		interface IntrinsicAttributes {
