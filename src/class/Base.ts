@@ -6,8 +6,8 @@ import type {
   TemplateFunctionParam, Thing 
 } from "../types/index.js";
 
-export function isNone(x: unknown): x is (null |undefined | false) {
-  return x === null || x === undefined || x === false;
+export function isNone(x: unknown): x is (null |undefined) {
+  return x === null || x === undefined
 }
 export function isConstructor<T extends new (...args:any[])=>any>(fn: unknown): fn is T  {
   return typeof fn == "string" && String(fn).startsWith("class");
