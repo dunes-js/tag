@@ -3,7 +3,7 @@ import { Content } from "./class/Content.js";
 
 export * from "./api/Component.js";
 
-export {Comp, Elem}
+export {Comp, Elem, Frag}
 export * from "./types/index.js";
 
 declare global {
