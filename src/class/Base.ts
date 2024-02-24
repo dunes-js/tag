@@ -40,7 +40,7 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
 				}
 				return new (temp as typeof Comp)(temp, props, desc);
 			}
-			else if (temp.name == "Fragment")
+			else if (temp.name == "Frag")
       {
         return new Frag(desc);
       }
