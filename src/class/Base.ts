@@ -38,15 +38,11 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
 				if (temp.type === "elem") {
 					throw "Cannot extend Elem yet"
 				}
-        // if (temp.type === "frag") {
-        //   throw "Cannot extend Frag yet"
-        // }
+        if (temp.type === "frag") {
+          return new Frag(desc);
+        }
 				return new (temp as typeof Comp)(temp, props, desc);
 			}
-			else if (temp.name == "Frag")
-      {
-        return new Frag(desc);
-      }
       else
       {
         return new Comp(temp, props, desc);
