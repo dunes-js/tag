@@ -10,7 +10,7 @@ export function isNone(x: unknown): x is (null |undefined) {
   return x === null || x === undefined
 }
 export function isConstructor<T extends new (...args:any[])=>any>(fn: unknown): fn is T  {
-  return typeof fn == "string" && String(fn).startsWith("class");
+  return typeof fn == "function" && String(fn).startsWith("class");
 }
 
 abstract class Base<P extends {[key: string]: any}> implements Thing {
@@ -35,9 +35,12 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
 	{
 		if (typeof temp === "function") {
 			if (isConstructor(temp)) {
-				if ((temp as typeof Elem).type === "elem") {
+				if (temp.type === "elem") {
 					throw "Cannot extend Elem yet"
 				}
+        if (temp.type === "frag") {
+          throw "Cannot extend Frag yet"
+        }
 				return new (temp as typeof Comp)(temp, props, desc);
 			}
 			else if (temp.name == "Frag")
