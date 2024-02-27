@@ -211,10 +211,16 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
         }
       }
 	  	else {
-	  		if (name == "cl") {
-					name = "class"
-				}
-				node.setAttribute(name, value.toString());
+
+        if (name == "cl") {
+          name = "class";
+        }
+        if (typeof value == "boolean")
+        {
+          (node as any)[name] = value;
+        }
+        else
+          node.setAttribute(name, value.toString());
 	  	}
 	  }
 
