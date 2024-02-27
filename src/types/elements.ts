@@ -322,7 +322,7 @@ interface GenericMedia<H extends HTMLMediaElement> extends Generic<H>{
   src?: string
   srcObject?: string
   currentSrc?: string
-  crossOrigin?: string
+  crossorigin?: string
   networkState?: string
   preload?: string
   buffered?: bool
@@ -652,7 +652,7 @@ declare global {
       src?: string
       srcset?: string
       sizes?: string
-      crossOrigin?: string
+      crossorigin?: string
       useMap?: string
       isMap?: string
       width?: num
@@ -758,7 +758,7 @@ declare global {
       target?: string
       type?: string
       "as"?: string
-      crossOrigin?: string
+      crossorigin?: string
       referrerPolicy?: string
       sheet?: string
       relList?: string
@@ -899,19 +899,19 @@ declare global {
       htmlFor?: string
       event?: string
       charset?: string
-      async?: string
+      async?: bool
       defer?: bool
       src?: string
       type?: string
-      crossOrigin?: string
-      noModule?: string
+      crossorigin?: string
+      nomodule?: string
       integrity?: string
       referrerPolicy?: string
     }
     interface Select extends Generic<HTMLSelectElement> {
       add?: string
       autocomplete?: string
-      checkValidity?: string
+      checkvalidity?: string
       disabled?: bool
       form?: string
       item?: string
@@ -924,9 +924,6 @@ declare global {
       remove?: string
       reportValidity?: string
       required?: bool
-      selectedIndex?: string
-      selectedOptions?: string
-      setCustomValidity?: string
       size?: string
       type?: string
       validationMessage?: string
@@ -1135,7 +1132,7 @@ declare global {
       width?: num;
       style?: CSSProperties | string;
 
-      crossOrigin?: "anonymous" | "use-credentials" | "";
+      crossorigin?: "anonymous" | "use-credentials" | "";
 
       // SVG Specific attributes
       accentHeight?: num;

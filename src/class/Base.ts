@@ -215,6 +215,9 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
         if (name == "cl") {
           name = "class";
         }
+        if (name == "htmlFor") {
+          name = "for";
+        }
         if (typeof value == "boolean")
         {
           (node as any)[name] = value;
