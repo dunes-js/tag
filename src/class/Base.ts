@@ -6,11 +6,19 @@ import type {
   TemplateFunctionParam, Thing 
 } from "../types/index.js";
 
-export function isNone(x: unknown): x is (null |undefined) {
+export function isNone(x: unknown): x is (null |undefined) 
+{
   return x === null || x === undefined
 }
-export function isConstructor<T extends new (...args:any[])=>any>(fn: unknown): fn is T  {
+
+export function isConstructor<T extends new (...args:any[])=>any>(fn: unknown): fn is T  
+{
   return typeof fn == "function" && String(fn).startsWith("class");
+}
+
+export function isHTML(x: unknown): x is HTMLElement
+{
+  return x != null && "window" in globalThis && typeof x === "object" && "nodeType" in x && x.nodeType == Node.ELEMENT_NODE;
 }
 
 abstract class Base<P extends {[key: string]: any}> implements Thing {
@@ -104,7 +112,8 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
       {
         this.#children.push(child)
       }
-      else if (!isNone(child)) 
+
+      else if (!isNone(child) && child != false)
       {
         this.#children.push(new Content(child))
       }
@@ -237,9 +246,13 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 	  	if (child.kind === "element") {
 	  		child.appendTo(node);
 	  	}
-	  	else {
-	  		node.append(child.toString());
-	  	}
+	  	else if (isHTML(child.value))
+      {
+        node.append(child.value);
+      }
+      else {
+        node.append(child.toString());
+      }
 	  }
 
 	  elem.append(node);
@@ -254,6 +267,10 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 	  	if (child.kind === "element") {
 	  		child.appendTo(node);
 	  	}
+      else if (isHTML(child.value))
+      {
+        node.append(child.value);
+      }
 	  	else {
 	  		node.append(child.toString());
 	  	}
@@ -283,7 +300,11 @@ export class Frag extends Base<{}>
     {
       if (child.kind == "content")
       {
-        elem.append(child.toString());
+        if (isHTML(child.value))
+        {
+          elem.append(child.value);
+        }
+        else elem.append(child.toString());
       }
       else
       {
