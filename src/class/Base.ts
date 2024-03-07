@@ -358,7 +358,8 @@ export class Comp<P extends { [key: string]: any; } = any> extends Base<P>
 	hasRendered?(): void;
 	willDestroy?(): void;
 
-	re(props?: Partial<P>) 
+	re(props?: Partial<P>)
+  : this
   {
 		if (!this.root) throw "Not rooted";
 		this.willDestroy?.();
@@ -370,6 +371,7 @@ export class Comp<P extends { [key: string]: any; } = any> extends Base<P>
 		}
 
 		this.replace(this.root);
+    return this;
 	}
 
 	override appendTo(elem: HTMLElement): HTMLElement 
