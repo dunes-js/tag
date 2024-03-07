@@ -113,7 +113,7 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
         this.#children.push(child)
       }
 
-      else if (!isNone(child) && child != false)
+      else if (!isNone(child) && child !== false)
       {
         this.#children.push(new Content(child))
       }
@@ -200,7 +200,7 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 	  			e => value.bind(node)(e)
 	  		)
 	  	}
-	  	else if (isNone(value) || value === "") {
+	  	else if (isNone(value)) {
 	  		continue;
 	  	}
       else if (name == "style")
@@ -227,7 +227,7 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
         if (name == "htmlFor") {
           name = "for";
         }
-        if (typeof value == "boolean")
+        if (typeof value == "boolean" && !name.includes("-"))
         {
           (node as any)[name] = value;
         }
