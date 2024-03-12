@@ -65,6 +65,8 @@ abstract class Base<P extends {[key: string]: any}> implements Thing {
 	readonly kind = "element";
 
 	abstract appendTo(elem: HTMLElement): HTMLElement
+  abstract prependTo(elem: HTMLElement): HTMLElement
+  abstract insertAt(elem: HTMLElement, position: InsertPosition): HTMLElement
 	abstract replace(elem: HTMLElement): HTMLElement
 
 	#children: Child[] = [];
@@ -239,46 +241,53 @@ export class Elem<T extends TagName = "div"> extends Base<JSX.IntrinsicElements[
 	  return node;
 	}
 
-	override appendTo(elem: HTMLElement) {
-	  const node = this.#createNode();
+  #create(): HTMLElement
+  {
+    const node = this.#createNode();
 
-	  for (const child of this.desc) {
-	  	if (child.kind === "element") {
-	  		child.appendTo(node);
-	  	}
-	  	else if (isHTML(child.value))
+    for (const child of this.desc) {
+      if (child.kind === "element") {
+        child.appendTo(node);
+      }
+      else if (isHTML(child.value))
       {
         node.append(child.value);
       }
       else {
         node.append(child.toString());
       }
-	  }
+    }
 
-	  elem.append(node);
+    return node;
+  }
+
+	override insertAt(elem: HTMLElement, position: InsertPosition) 
+  {
+    const node = this.#create();
+	  elem.insertAdjacentElement(position, node);
 	  this.root = node;
 		return node;
 	}
 
+  override appendTo(elem: HTMLElement) {
+    const node = this.#create();
+    elem.append(node);
+    this.root = node;
+    return node;
+  }
+
+  override prependTo(elem: HTMLElement) {
+    const node = this.#create();
+    elem.prepend(node);
+    this.root = node;
+    return node;
+  }
+
 	override replace(elem: HTMLElement) {
-	  const node = this.#createNode();
-
-	  for (const child of this.desc) {
-	  	if (child.kind === "element") {
-	  		child.appendTo(node);
-	  	}
-      else if (isHTML(child.value))
-      {
-        node.append(child.value);
-      }
-	  	else {
-	  		node.append(child.toString());
-	  	}
-	  }
-
-	  elem.replaceWith(node);
-	  this.root = node;
-		return node;
+    const node = this.#create();
+    elem.replaceWith(node);
+    this.root = node;
+    return node;
 	}
 
 }
@@ -314,7 +323,62 @@ export class Frag extends Base<{}>
 
     return elem;
   }
-  override replace(elem: HTMLElement): HTMLElement 
+
+  override prependTo(elem: HTMLElement): HTMLElement 
+  {
+    let first: HTMLElement | null = null;
+    
+    for (const child of this.desc)
+    {
+      if (child.kind == "content")
+      {
+        if (isHTML(child.value))
+        {
+          elem.append(child.value);
+        }
+        else elem.append(child.toString());
+      }
+      else if (first)
+      {
+        child.insertAt(first, "afterend");
+      }
+      else
+      {
+        first = child.prependTo(elem);
+      }
+    }
+
+    return elem;
+  }
+
+  override insertAt(elem: HTMLElement, position: InsertPosition): HTMLElement 
+  {
+    let first: HTMLElement | null = null;
+    
+    for (const child of this.desc)
+    {
+      if (child.kind == "content")
+      {
+        if (isHTML(child.value))
+        {
+          elem.append(child.value);
+        }
+        else elem.append(child.toString());
+      }
+      else if (first)
+      {
+        child.insertAt(first, "afterend");
+      }
+      else
+      {
+        first = child.insertAt(elem, position);
+      }
+    }
+
+    return elem;
+  }
+
+  override replace(_elem: HTMLElement): HTMLElement 
   {
     throw new Error("Cannot replace an element with a fragment of elements");
   }
@@ -381,8 +445,25 @@ export class Comp<P extends { [key: string]: any; } = any> extends Base<P>
 		this.root = node;
 		this.hasRendered?.();
 		return node;
-
 	}
+
+  override prependTo(elem: HTMLElement): HTMLElement 
+  {
+    this.willRender?.();
+    const node = this.template().prependTo(elem);
+    this.root = node;
+    this.hasRendered?.();
+    return node;
+  }
+
+  override insertAt(elem: HTMLElement, position: InsertPosition): HTMLElement 
+  {
+    this.willRender?.();
+    const node = this.template().insertAt(elem, position);
+    this.root = node;
+    this.hasRendered?.();
+    return node;
+  }
 
 	override replace(elem: HTMLElement): HTMLElement 
   {
